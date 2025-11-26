@@ -76,11 +76,37 @@ highPressureCompressor.set_attr(pr=22.3547)
 combustionChamber.set_attr(pr=1)
 
 c1.set_attr(
-    p=1, T=20,
+    p=0.226321, T=-56.5,
     fluid={"Ar": 0.0129, "N2": 0.7553, "CO2": 0.0004, "O2": 0.2314}
 )
-c5.set_attr(fluid={"CO2": 0.04, "CH4": 0.96, "H2": 0})
 
-c7.set_attr(p=Ref(c1, 1, 0))
+c2.set_attr(
+    T=-4.075
+)
+
+c3.set_attr(
+    # p=10.786056,
+    T=371.3
+)
+
+c4.set_attr(
+    # p=10.786056,
+    # T=1655.9614
+)
+
+c5.set_attr(
+    #     p=Ref(c2, 1.05, 0), T=-56.5,
+    p=0.226321, T=-56.5,
+    m=200,
+    fluid={"CO2": 0.04, "CH4": 0.96, "H2": 0})
+
+c6.set_attr(
+    p=4.266,
+    T=1280.5864
+)
+
+c7.set_attr(
+    p=Ref(c1, 1, 0),
+    T=475)
 
 network.solve("design")
