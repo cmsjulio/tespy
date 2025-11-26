@@ -21,41 +21,18 @@ fuel = Source("fuel source")
 flueGasSink = Sink("flue gas sink")
 
 # %%[sec_2]
-c2 = Connection(air, "out1", combustionChamber, "in1", label="2")
-c3 = Connection(combustionChamber, "out1", flueGasSink, "in1", label="3")
-c5 = Connection(fuel, "out1", combustionChamber, "in2", label="5")
-network.add_conns(c2, c3, c5)
+# c2 = Connection(air, "out1", combustionChamber, "in1", label="2")
+# c3 = Connection(combustionChamber, "out1", flueGasSink, "in1", label="3")
+# network.add_conns(c2, c3, c5)
 # %%[sec_3]
-combustionChamber.set_attr(pr=1, eta=1, lamb=1.5, ti=10)
 
-c2.set_attr(
-    p=1, T=20,
-    fluid={"Ar": 0.0129, "N2": 0.7553, "CO2": 0.0004, "O2": 0.2314}
-)
-c5.set_attr(p=1, T=20, fluid={"CO2": 0.04, "CH4": 0.96, "H2": 0})
-
-network.solve(mode="design")
-network.print_results()
-# %%[sec_4]
-combustionChamber.set_attr(ti=None)
-c5.set_attr(m=1)
-network.solve(mode="design")
-# %%[sec_5]
-combustionChamber.set_attr(lamb=None)
-c3.set_attr(T=1400)
-network.solve(mode="design")
-# %%[sec_6]
-c5.set_attr(fluid={"CO2": 0.03, "CH4": 0.92, "H2": 0.05})
-network.solve(mode="design")
-# %%[sec_7]
-print(network.results["Connection"])
-# %%[sec_8]
-network.del_conns(c2, c3)
 c1 = Connection(air, "out1", compressor, "in1", label="1")
 c2 = Connection(compressor, "out1", combustionChamber, "in1", label="2")
 c3 = Connection(combustionChamber, "out1", turbine, "in1", label="3")
 c4 = Connection(turbine, "out1", flueGasSink, "in1", label="4")
-network.add_conns(c1, c2, c3, c4)
+c5 = Connection(fuel, "out1", combustionChamber, "in2", label="5")
+network.add_conns(c1, c2, c3, c4, c5)
+
 
 generator = Generator("generator")
 grid = PowerSink("grid")
@@ -76,17 +53,19 @@ c1.set_attr(
     p=1, T=20,
     fluid={"Ar": 0.0129, "N2": 0.7553, "CO2": 0.0004, "O2": 0.2314}
 )
-c3.set_attr(m=30)
 c4.set_attr(p=Ref(c1, 1, 0))
-network.solve("design")
 c3.set_attr(m=None, T=1200)
-network.solve("design")
-network.print_results()
 # %%[sec_10]
 # unset the value, set Referenced value instead
+c5.set_attr(m=1)
+c5.set_attr(p=1, T=20, fluid={"CO2": 0.04, "CH4": 0.96, "H2": 0})
 c5.set_attr(p=None)
 c5.set_attr(p=Ref(c2, 1.05, 0))
+
+combustionChamber.set_attr(pr=1, eta=1)
+
 network.solve("design")
+
 # %%[sec_11]
 combustionChamber.set_attr(pr=0.97, eta=0.98)
 network.set_attr(iterinfo=False)
