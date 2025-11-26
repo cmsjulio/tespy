@@ -69,10 +69,18 @@ network.add_conns(c1, c2, c3, c4, c5, c6, c7, e1, e2, e3, e4)
 
 
 # Parametrização
+
+# do apêndice do TCC
+lowPressureCompressor.set_attr(pr=2.1319)
+highPressureCompressor.set_attr(pr=22.3547)
+combustionChamber.set_attr(pr=1)
+
 c1.set_attr(
     p=1, T=20,
     fluid={"Ar": 0.0129, "N2": 0.7553, "CO2": 0.0004, "O2": 0.2314}
 )
 c5.set_attr(fluid={"CO2": 0.04, "CH4": 0.96, "H2": 0})
+
+c7.set_attr(p=Ref(c1, 1, 0))
 
 network.solve("design")
